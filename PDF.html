@@ -1,3 +1,4 @@
+{% layout none %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1322,7 +1323,9 @@
     <div class="container">
       <div class="header-content">
         <a href="#" class="logo">
-          <span class="logo-icon">🔄</span>
+          <span class="logo-icon">
+            <img src="https://cdn.shopify.com/s/files/1/0686/8952/6975/files/1C3C9763-7DE4-475E-8C2A-8E81946A0DF7.png?v=1748731479" alt="logo icon" style="width: 30px; height: 30px;">
+          </span>
           PDF<span style="color: var(--primary-color);">Convert</span>
         </a>
         <nav class="nav-links" id="navLinks">
@@ -1356,7 +1359,7 @@
           <div class="file-type"><span class="file-icon">📋</span> TXT</div>
         </div>
         
-        <a href="https://your-adsterra-direct-link.com" class="cta-button pulse" target="_blank">Convert Now</a>
+<a href="https://your-adsterra-direct-link.com" class="cta-button pulse" target="_blank" style="display: block; width: fit-content; margin: 0 auto;">Convert Now</a>
         
         <div class="trust-badges">
           <div class="trust-badge">
@@ -1879,6 +1882,20 @@
     if (window.innerWidth > 768) {
       document.body.style.cursor = 'none';
     }
+  </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById("fileInput");
+      const fileName = document.getElementById("fileName");
+
+      input.addEventListener("change", function () {
+        if (input.files.length > 0) {
+          fileName.textContent = "تم اختيار الملف: " + input.files[0].name;
+        } else {
+          fileName.textContent = "";
+        }
+      });
+    });
   </script>
 </body>
 </html>
