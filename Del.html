@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>بوت Dice الذكي - الجيل الثالث</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: 'Tahoma', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      background: #1f1f2e;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px #333;
+    }
+    .stage { font-weight: bold; color: #ffc107; }
+    .btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .win { background: #28a745; color: white; }
+    .lose { background: #dc3545; color: white; }
+    .save { background: #007bff; color: white; }
+    .reset { background: #6c757d; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎯 بوت Dice اليدوي الذكي - الجيل الثالث</h2>
+    <p>الجولة: <span id="round">1</span> / 30</p>
+    <p>المرحلة: <span class="stage" id="phase">تمويه</span></p>
+    <p>💰 الرهان الحالي: <span id="bet">0.01</span> USDT</p>
+    <p>🎯 نسبة الفوز: <span id="chance">95</span>%</p>
+    <p>🎲 اتجاه الرهان: <span id="direction">أقل من 9500</span></p>
+    <p>💵 الرصيد: <span id="balance">0.0000</span> USDT</p>
+    <hr>
+    <button class="btn win" onclick="play(true)">✅ ربحت</button>
+    <button class="btn lose" onclick="play(false)">❌ خسرت</button>
+    <br>
+    <button class="btn save" onclick="save()">💾 حفظ النتائج</button>
+    <button class="btn reset" onclick="reset()">🔁 إعادة</button>
+    <p style="margin-top:15px;">📈 عند الخسارة: تضاعف الرهان ×2.2 | 🎯 عند الربح: يعود إلى 0.01</p>
+  </div>
+
+  <script>
+    let round = 1;
+    let bet = 0.01;
+    let balance = 0;
+    let history = [];
+    const maxRounds = 30;
+
+    function getPhase(r) {
+      if (r <= 5) return "تمويه";
+      if (r <= 20) return "ربح تدريجي";
+      return "ضربة هجومية";
+    }
+
+    function getChance(r) {
+      if (r <= 5) return 95;
+      if (r <= 20) return 85;
+      return 65;
+    }
+
+    function getDirection() {
+      const random = Math.random();
+      const value = random > 0.5
+        ? `أقل من ${Math.floor(9000 + Math.random() * 500)}`
+        : `أكثر من ${Math.floor(300 + Math.random() * 1000)}`;
+      return value;
+    }
+
+    function updateUI() {
+      document.getElementById('round').innerText = round;
+      document.getElementById('bet').innerText = bet.toFixed(4);
+      document.getElementById('balance').innerText = balance.toFixed(4);
+      document.getElementById('phase').innerText = getPhase(round);
+      document.getElementById('chance').innerText = getChance(round);
+      document.getElementById('direction').innerText = getDirection();
+    }
+
+    function play(win) {
+      if (round > maxRounds) return alert("انتهت الجولات ✅");
+
+      const chance = getChance(round);
+      const gain = win ? bet * (100 / chance - 1) : 0;
+
+      if (win) {
+        balance += gain;
+        history.push({ round, win: gain.toFixed(4), lose: "0.0000", bet: bet.toFixed(4) });
+        bet = 0.01;
+      } else {
+        balance -= bet;
+        history.push({ round, win: "0.0000", lose: bet.toFixed(4), bet: bet.toFixed(4) });
+        bet *= 2.2;
+      }
+
+      round++;
+      updateUI();
+    }
+
+    function reset() {
+      if (confirm("هل أنت متأكد من إعادة البوت؟")) {
+        round = 1;
+        bet = 0.01;
+        balance = 0;
+        history = [];
+        updateUI();
+      }
+    }
+
+    function save() {
+      const blob = new Blob([JSON.stringify(history, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "dice_results.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>
