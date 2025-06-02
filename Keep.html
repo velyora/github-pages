@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>الخطة العسكرية G2</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 20px;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background-color: #333;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    input {
+      width: 80px;
+      padding: 4px;
+    }
+    button {
+      padding: 5px 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .results {
+      background: #e2e6ea;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h2>الخطة العسكرية G2 (من 5:30 مساءً إلى 12:00 منتصف الليل)</h2>
+
+<table id="plan">
+  <thead>
+    <tr>
+      <th>الجولة</th>
+      <th>الوقت</th>
+      <th>النوع</th>
+      <th>الرهان ($)</th>
+      <th>الألغام</th>
+      <th>الربح</th>
+      <th>الخسارة</th>
+      <th>تسجيل</th>
+    </tr>
+  </thead>
+  <tbody id="plan-body"></tbody>
+</table>
+
+<div class="results">
+  ✅ الربح الصافي: <span id="net">0</span> $<br>
+  📈 مجموع الأرباح: <span id="profit">0</span> $<br>
+  📉 مجموع الخسائر: <span id="loss">0</span> $<br>
+  🔥 الجولات الرابحة: <span id="wins">0</span><br>
+  💥 الجولات الخاسرة: <span id="fails">0</span>
+</div>
+
+<script>
+const rounds = [
+  { time: "5:30", type: "مشاة", bet: 1, mines: 4 },
+  { time: "5:45", type: "مرتجلة", bet: 1.2, mines: 5 },
+  { time: "6:00", type: "فرسان", bet: 3, mines: 2 },
+  { time: "6:15", type: "مشاة", bet: 1, mines: 3 },
+  { time: "6:30", type: "فرسان", bet: 4, mines: 2 },
+  { time: "6:50", type: "شبحية", bet: 2.5, mines: 3 },
+  { time: "7:10", type: "فرسان", bet: 3.5, mines: 2 },
+  { time: "7:30", type: "مرتجلة", bet: 1.1, mines: 4 },
+  { time: "8:00", type: "دروع", bet: 5, mines: 1 },
+  { time: "8:30", type: "شبحية", bet: 2, mines: 2 },
+  { time: "9:00", type: "مشاة", bet: 1, mines: 4 },
+  { time: "9:30", type: "فرسان", bet: 3, mines: 2 },
+  { time: "10:00", type: "مرتجلة", bet: 1.4, mines: 5 },
+  { time: "10:30", type: "شبحية", bet: 2, mines: 3 },
+  { time: "11:00", type: "مشاة", bet: 0.9, mines: 5 },
+  { time: "11:30", type: "فرسان", bet: 3.5, mines: 2 },
+  { time: "11:50", type: "شبحية", bet: 1.8, mines: 3 }
+];
+
+let profit = 0, loss = 0, win = 0, fail = 0;
+
+const body = document.getElementById('plan-body');
+rounds.forEach((r, i) => {
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${i+1}</td>
+    <td>${r.time}</td>
+    <td>${r.type}</td>
+    <td>${r.bet}</td>
+    <td>${r.mines}</td>
+    <td><input id="p${i}" type="number"></td>
+    <td><input id="l${i}" type="number"></td>
+    <td><button onclick="record(${i})">تسجيل</button></td>
+  `;
+  body.appendChild(row);
+});
+
+function record(i) {
+  const p = parseFloat(document.getElementById(`p${i}`).value) || 0;
+  const l = parseFloat(document.getElementById(`l${i}`).value) || 0;
+
+  profit += p;
+  loss += l;
+
+  if (p > l) win++;
+  else if (l > 0 && p === 0) fail++;
+
+  document.getElementById('net').innerText = (profit - loss).toFixed(2);
+  document.getElementById('profit').innerText = profit.toFixed(2);
+  document.getElementById('loss').innerText = loss.toFixed(2);
+  document.getElementById('wins').innerText = win;
+  document.getElementById('fails').innerText = fail;
+}
+</script>
+
+</body>
+</html>
