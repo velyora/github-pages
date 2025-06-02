@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>بوت Dice اليدوي الذكي</title>
+  <style>
+    body { background: #111; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
+    .container { background: #1e1e2e; padding: 20px; border-radius: 10px; max-width: 550px; margin: auto; }
+    button { padding: 10px 20px; font-size: 18px; margin: 10px; border-radius: 5px; border: none; cursor: pointer; }
+    .win { background: #4caf50; color: white; }
+    .lose { background: #f44336; color: white; }
+    .reset { background: #555; color: white; }
+    .save { background: #2196f3; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎲 بوت Dice اليدوي الذكي</h2>
+    <p>الجولة: <span id="round">1</span> / 30</p>
+    <p>الرهان الحالي: <span id="bet">0.01</span> USDT</p>
+    <p>نسبة الفوز: <span id="chance">94.5</span>%</p>
+    <p>اتجاه الرهان: <span id="direction">أقل من 9450</span></p>
+    <p>💰 الرصيد: <span id="balance">0.00</span> USDT</p>
+    <p>⏳ الانتظار بين الجولات: <span id="timer">جاهز</span></p>
+    <button class="win" onclick="handleAction(true)">✅ ربحت</button>
+    <button class="lose" onclick="handleAction(false)">❌ خسرت</button>
+    <button class="save" onclick="saveResults()">💾 حفظ النتائج</button>
+    <button class="reset" onclick="resetGame()">🔁 إعادة</button>
+    <div style="margin-top:20px; font-size: 14px;">
+      <p>🔄 عند الخسارة يتم مضاعفة الرهان ×2.2 تلقائيًا</p>
+      <p>🏁 عند الربح، يعود إلى 0.01</p>
+    </div>
+  </div>
+
+  <script>
+    let bet = 0.01;
+    let balance = 0;
+    let round = 1;
+    const maxRounds = 30;
+    const multiplier = 2.2;
+    const chanceOptions = [94.5, 94.1, 93.7, 92.9];
+    const directionOptions = ["أقل من 9450", "أقل من 9310", "أكثر من 0550", "أكثر من 0999"];
+    const results = [];
+
+    function updateDisplay() {
+      document.getElementById("round").innerText = round;
+      document.getElementById("bet").innerText = bet.toFixed(4);
+      document.getElementById("balance").innerText = balance.toFixed(4);
+      document.getElementById("chance").innerText = chanceOptions[Math.floor(Math.random() * chanceOptions.length)];
+      document.getElementById("direction").innerText = directionOptions[Math.floor(Math.random() * directionOptions.length)];
+      document.getElementById("timer").innerText = "جاهز";
+    }
+
+    function handleAction(win) {
+      if (round > maxRounds) return alert("انتهت الجولات!");
+      document.getElementById("timer").innerText = "⏳ جاري التمهيد للجولة التالية...";
+
+      setTimeout(() => {
+        let result = { جولة: round, الربح: 0, الخسارة: 0 };
+        if (win) {
+          let profit = bet * (100 / 94.5 - 1);
+          balance += profit;
+          result.الربح = +profit.toFixed(4);
+          bet = 0.01;
+        } else {
+          balance -= bet;
+          result.الخسارة = +bet.toFixed(4);
+          bet *= multiplier;
+        }
+
+        results.push(result);
+        round++;
+        updateDisplay();
+      }, Math.floor(Math.random() * 5000) + 5000); // 5 إلى 10 ثواني تمويه
+    }
+
+    function resetGame() {
+      if (confirm("هل تريد إعادة الخطة؟")) {
+        bet = 0.01;
+        balance = 0;
+        round = 1;
+        results.length = 0;
+        updateDisplay();
+      }
+    }
+
+    function saveResults() {
+      const data = {
+        التاريخ: new Date().toLocaleString('ar'),
+        النتائج: results,
+        الرصيد_النهائي: balance.toFixed(4)
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "dice_results.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
