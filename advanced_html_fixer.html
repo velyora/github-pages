@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>أداة تصحيح كود HTML لبلوجر - احترافية</title>
+  <style>
+    body { background-color: #f5f5f5; font-family: Tahoma, sans-serif; padding: 30px; color: #222; }
+    textarea { width: 100%; height: 260px; margin-bottom: 20px; padding: 10px; font-family: monospace; font-size: 14px; direction: ltr; }
+    button { padding: 10px 30px; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    h2 { color: #333; }
+  </style>
+</head>
+<body>
+  <h2>🛠️ أداة متقدمة لتحويل وتصحيح كود HTML لبلوجر</h2>
+  <p>الصق الكود هنا:</p>
+  <textarea id="input"></textarea>
+  <button onclick="convertCode()">🔁 تحويل الكود</button>
+  <p>الكود النهائي (انسخه لبلوجر):</p>
+  <textarea id="output" readonly></textarea>
+
+  <script>
+    function convertCode() {
+      let code = document.getElementById("input").value;
+
+      code = code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
+
+      // إغلاق الوسوم الذاتية مثل meta, img, input
+      code = code.replace(/&lt;(meta|img|input|br|hr)([^&]*)(?<!\/)&gt;/g, "&lt;$1$2 /&gt;");
+
+      document.getElementById("output").value = code;
+    }
+  </script>
+</body>
+</html>
