@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>بوت Dice اليدوي</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      background-color: #1e1e2f;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 500px;
+      margin: auto;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .win { background: #28a745; color: white; }
+    .lose { background: #dc3545; color: white; }
+    .summary {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🎲 بوت Dice اليدوي</h2>
+    <p>الجولة الحالية: <span id="round">1</span> / 30</p>
+    <p>💰 الرهان: <span id="bet">0.01</span> USDT</p>
+    <p>📊 الرصيد الكلي: <span id="balance">0.00</span> USDT</p>
+
+    <button class="win" onclick="recordResult(true)">ربحت ✅</button>
+    <button class="lose" onclick="recordResult(false)">خسرت ❌</button>
+
+    <div class="summary" id="summary">
+      🧮 الربح: 0 | الخسارة: 0 | الجولات الرابحة: 0 | الجولات الخاسرة: 0
+    </div>
+  </div>
+
+  <script>
+    let round = 1;
+    let bet = 0.01;
+    let balance = 0;
+    let wins = 0;
+    let losses = 0;
+
+    function recordResult(isWin) {
+      if (round > 30) return;
+
+      if (isWin) {
+        let profit = bet * 0.08;
+        balance += profit;
+        wins++;
+      } else {
+        balance -= bet;
+        losses++;
+        bet *= 2.2;
+      }
+
+      round++;
+      if (isWin) bet = 0.01;
+
+      document.getElementById("round").innerText = round > 30 ? "انتهت" : round;
+      document.getElementById("bet").innerText = bet.toFixed(4);
+      document.getElementById("balance").innerText = balance.toFixed(4);
+      document.getElementById("summary").innerText = `
+        🧮 الربح: ${balance.toFixed(4)} | الخسارة: ${losses} | الجولات الرابحة: ${wins} | الجولات الخاسرة: ${losses}
+      `;
+    }
+  </script>
+
+</body>
+</html>
