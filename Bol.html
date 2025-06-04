@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF to Word Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4ff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: #333;
+    }
+    header {
+      padding: 2rem;
+      background-color: #726cff;
+      color: white;
+    }
+    main {
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .upload-box {
+      margin-bottom: 1rem;
+    }
+    input[type="file"] {
+      padding: 1rem;
+    }
+    .cta-button {
+      background-color: #ff66c4;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: #ff4aad;
+    }
+    #ad-container {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Convert PDF to Word</h1>
+    <p>Instant, Free & Secure Conversion</p>
+  </header>
+  <main>
+    <div class="upload-box">
+      <input type="file" id="fileInput" accept=".pdf" />
+    </div>
+    <button class="cta-button" id="convertBtn">Convert Now</button>
+    <div id="ad-container">
+      <!-- Adsterra script or CPA offer goes here -->
+      <p>Thank you! Your download will start soon...</p>
+    </div>
+  </main>
+  <script>
+    document.getElementById("convertBtn").addEventListener("click", function() {
+      const fileInput = document.getElementById("fileInput");
+      if (!fileInput.files.length) {
+        alert("Please upload a PDF file first.");
+        return;
+      }
+
+      // Simulate conversion delay
+      this.textContent = "Converting...";
+      this.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById("ad-container").style.display = "block";
+        this.textContent = "Convert Now";
+        this.disabled = false;
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
